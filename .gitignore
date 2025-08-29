@@ -1,0 +1,30 @@
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.swp
+*.egg-info/
+*.egg
+
+# Django
+*.sqlite3
+db.sqlite3
+local_settings.py
+
+# Media files
+/media/
+media/
+
+# Static files collected
+/staticfiles/
+/static/
+
+# VSCode
+.vscode/
+
+# MacOS
+.DS_Store
+
+# PyCharm
+.idea/
