@@ -1,6 +1,6 @@
 import json
 from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from .models import Place
 
 # Главная страница с картой и GeoJSON
@@ -18,7 +18,7 @@ def index(request):
             "properties": {
                 "title": place.title,
                 "placeId": f"place_{place.id}",
-                "detailsUrl": f"/places/{place.id}/json/"
+                "detailsUrl": f"/places/{place.id}/",  # <-- URL для fetch теперь без /json/
             }
         })
 
@@ -45,8 +45,3 @@ def place_json(request, place_id):
         }
     }
     return JsonResponse(data)
-
-# Новый эндпоинт: отдаёт только название места
-def place_name(request, place_id):
-    place = get_object_or_404(Place, id=place_id)
-    return HttpResponse(place.title)
