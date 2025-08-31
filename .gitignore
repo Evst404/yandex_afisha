@@ -7,23 +7,26 @@ __pycache__/
 *.egg-info/
 dist/
 build/
-*.pyc
 
-# Environment
-.env
+# Virtual environments
 venv/
 env/
 ENV/
 .venv/
 
-# Django
+# Django database
 *.sqlite3
-db.sqlite3
+
+# Django static & media
 /staticfiles/
-media/uploads/
+media/
+uploads/
 
 # CKEditor uploads
 uploads/
+
+# Environment variables
+.env
 
 # Logs
 *.log
