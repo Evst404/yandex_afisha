@@ -1,30 +1,39 @@
 # Python
-*.pyc
 __pycache__/
-*.pyo
-*.pyd
-*.swp
-*.egg-info/
+*.py[cod]
+*$py.class
+*.so
 *.egg
+*.egg-info/
+dist/
+build/
+*.pyc
+
+# Environment
+.env
+venv/
+env/
+ENV/
+.venv/
 
 # Django
 *.sqlite3
 db.sqlite3
-local_settings.py
-
-# Media files
-/media/
-media/
-
-# Static files collected
 /staticfiles/
-/static/
+media/uploads/
 
-# VSCode
+# CKEditor uploads
+uploads/
+
+# Logs
+*.log
+
+# IDEs
 .vscode/
-
-# MacOS
-.DS_Store
-
-# PyCharm
 .idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db

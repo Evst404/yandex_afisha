@@ -1,12 +1,19 @@
 from pathlib import Path
 import os
+from environs import Env
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-cy0^!46!wk5ce=k$%tlebsqmdi&a7wiy#ff1!%v4-$vvpt)2f9'
-DEBUG = True
-ALLOWED_HOSTS = []
+# === Чтение переменных окружения ===
+env = Env()
+env.read_env(os.path.join(BASE_DIR, ".env"))  # читаем файл .env, если есть
 
+# === Чувствительные настройки ===
+SECRET_KEY = env.str("DJANGO_SECRET_KEY", "dev-secret-key")  # дефолт только для локалки
+DEBUG = env.bool("DJANGO_DEBUG", True)
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", ["127.0.0.1", "localhost"])
+
+# === Приложения ===
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -16,8 +23,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'places',
     'adminsortable2',
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
+# === Middleware ===
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -30,10 +40,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'yandex_afisha.urls'
 
+# === Templates ===
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # путь к вашим HTML-шаблонам
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -47,13 +58,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'yandex_afisha.wsgi.application'
 
+# === База данных ===
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': env.str("DJANGO_DB_ENGINE", "django.db.backends.sqlite3"),
+        'NAME': env.str("DJANGO_DB_NAME", BASE_DIR / "db.sqlite3"),
+        'USER': env.str("DJANGO_DB_USER", ""),
+        'PASSWORD': env.str("DJANGO_DB_PASSWORD", ""),
+        'HOST': env.str("DJANGO_DB_HOST", ""),
+        'PORT': env.str("DJANGO_DB_PORT", ""),
     }
 }
 
+# === Проверка паролей ===
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -61,18 +78,29 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# === Локализация ===
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Статические файлы
+# === Статика ===
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),  # путь к вашим CSS/JS/изображениям
-]
-# MEDIA
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # для collectstatic на сервере
+
+# === Медиа ===
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# === CKEditor ===
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_CONFIGS = {
+    "default": {
+        "toolbar": "full",
+        "height": 300,
+        "width": "100%",
+    },
+}

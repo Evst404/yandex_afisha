@@ -2,11 +2,13 @@ from django import forms
 from django.contrib import admin
 from django.utils.html import format_html
 from adminsortable2.admin import SortableInlineAdminMixin, SortableAdminBase
+from ckeditor.widgets import CKEditorWidget
 
 from .models import Place, PlaceImage
 
 
 class PlaceForm(forms.ModelForm):
+    description_long = forms.CharField(widget=CKEditorWidget(), required=False)
     latitude = forms.FloatField(label="Широта", required=False)
     longitude = forms.FloatField(label="Долгота", required=False)
 
@@ -33,7 +35,7 @@ class PlaceForm(forms.ModelForm):
 class PlaceImageInline(SortableInlineAdminMixin, admin.TabularInline):
     model = PlaceImage
     extra = 0
-    fields = ("image", "preview")   # убрали поле order
+    fields = ("image", "preview")  # убрали поле order
     readonly_fields = ("preview",)
 
     def preview(self, obj):
