@@ -4,16 +4,16 @@ from environs import Env
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# === Чтение переменных окружения ===
-env = Env()
-env.read_env(os.path.join(BASE_DIR, ".env"))  # читаем файл .env, если есть
 
-# === Чувствительные настройки ===
-SECRET_KEY = env.str("DJANGO_SECRET_KEY", "dev-secret-key")  # дефолт только для локалки
+env = Env()
+env.read_env(os.path.join(BASE_DIR, ".env"))  
+
+
+SECRET_KEY = env.str("DJANGO_SECRET_KEY", "dev-secret-key")  
 DEBUG = env.bool("DJANGO_DEBUG", True)
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", ["127.0.0.1", "localhost"])
 
-# === Приложения ===
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -87,7 +87,7 @@ USE_TZ = True
 # === Статика ===
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # для collectstatic на сервере
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  
 
 # === Медиа ===
 MEDIA_URL = '/media/'
