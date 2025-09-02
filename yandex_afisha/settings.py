@@ -1,15 +1,15 @@
-from pathlib import Path
 import os
+from pathlib import Path
 from environs import Env
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 env = Env()
 env.read_env(os.path.join(BASE_DIR, ".env"))  
 
 
-SECRET_KEY = env.str("DJANGO_SECRET_KEY", "dev-secret-key")  
+SECRET_KEY = env.str("DJANGO_SECRET_KEY")  
+
 DEBUG = env.bool("DJANGO_DEBUG", True)
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", ["127.0.0.1", "localhost"])
 

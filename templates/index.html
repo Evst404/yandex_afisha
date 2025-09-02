@@ -1,36 +1,32 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="utf-8">
   <title>Куда пойти — Москва глазами Артёма</title>
-
   <link rel="shortcut icon" href="{% static 'favicon.png' %}" type="image/png">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" crossorigin=""/>
   <link rel="stylesheet" href="{% static 'css/leaflet-sidebar.css' %}">
 
-  <!-- Bootstrap -->
+  <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" crossorigin="anonymous">
   <link rel="stylesheet" href="https://unpkg.com/@ansur/leaflet-pulse-icon@0.1.1/dist/L.Icon.Pulse.css">
 
   <style>
-    body { padding: 0; margin: 0; }
-    html, body, #map { height: 100%; }
+    html, body, #map { height: 100%; margin: 0; padding: 0; }
     .place-description img { max-width: 100%; }
     .sidebar-content { padding: 14px 20px; height: 100%; }
     .select-place-prompt { color: red; width: 100px; }
   </style>
 
-  <!-- GeoJSON с местами -->
-  <script id="places-geojson" type="application/json">
-    {{ places_geojson|safe }}
-  </script>
+  <!-- 🔹 Передача JSON через json_script -->
+  {{ places_geojson|json_script:"places-geojson" }}
 
-  <!-- Шаблон Vue -->
+  <!-- Vue шаблон -->
   <script id="app-template" type="text/template">
     <div v-bind:class="{'sidebar-content': 1, 'bg-white': selectedPlace, 'bg-secondary': !selectedPlace}">
       <div v-if="promptVisible" class="d-flex flex-column justify-content-center align-items-center" style="height: 100%;">
@@ -45,11 +41,8 @@
       </div>
 
       <div class="place-description" v-if="selectedPlace">
-
         <img v-if="mainPhotoSrc" v-bind:src="mainPhotoSrc" class="d-block shadow mb-3 rounded" v-bind:alt="selectedPlace.title">
-
         <h5 class="mb-3">{{ selectedPlace.title }}</h5>
-
         <p>{{ selectedPlace.short_description }}</p>
 
         <div id="place-photos" class="carousel slide mb-3 shadow" data-ride="carousel" data-interval="5000">
@@ -81,8 +74,8 @@
       </div>
     </div>
   </script>
-
 </head>
+
 <body>
   <div id="sidebar">
     <div id="sidebar-app"></div>
@@ -101,7 +94,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/loglevel/1.6.8/loglevel.min.js" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.min.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/@ansur/leaflet-pulse-icon@0.1.1/dist/L.Icon.Pulse.js"></script>
-
   <script src="{% static 'js/leaflet-sidebar.js' %}"></script>
 
   <script>
@@ -111,44 +103,34 @@
     var sidebar = L.control.sidebar('sidebar', { closeButton: true, position: 'right' });
     map.addControl(sidebar);
 
-    // 🔹 Отладочный чекбокс
+    // Отладочный чекбокс
     L.control.custom({
       position: 'bottomleft',
-      content: `
-        <label>
-            <input name="debug" type="checkbox" checked/>
-            Отладка
-        </label>`,
-      style: {
-        padding: '10px',
-        background: 'rgba(255, 255, 255, 0.7)',
-      },
+      content: `<label><input name="debug" type="checkbox" checked/> Отладка</label>`,
+      style: { padding: '10px', background: 'rgba(255, 255, 255, 0.7)' },
       events: {
         click: event => {
           if (event.target.name == 'debug'){
             let level = event.target.checked ? 'debug' : 'warn';
             log.setLevel(level);
-            console.log(`Set log level: ${level}`)
           }
         },
       }
     }).addTo(map);
 
-    function loadJSON(elementId){
-      let element = document.getElementById(elementId);
-      if (!element){ console.error(`Not found element with id '${elementId}'.`); return null; }
-      return JSON.parse(element.textContent);
-    }
-
-    let places = loadJSON('places-geojson');
+    // 🔹 JSON через json_script
+    let places = JSON.parse(document.getElementById('places-geojson').textContent);
 
     L.geoJSON(places, {
-      pointToLayer: function(geoJsonPoint, latlng) {
-        let color = geoJsonPoint.properties.color || 'red';
+      pointToLayer: function(feature, latlng) {
+        let color = feature.properties.color || 'red';
         let pulsingIcon = L.icon.pulse({ iconSize: [12,12], color: color, fillColor: color, heartbeat: 2.5 });
         let marker = L.marker(latlng, { icon: pulsingIcon, riseOnHover: true });
-        marker.bindTooltip(geoJsonPoint.properties.title);
-        marker.on('click', function(){ sidebar.show(); loadPlaceInfo(geoJsonPoint.properties.placeId, geoJsonPoint.properties.detailsUrl); });
+        marker.bindTooltip(feature.properties.title);
+        marker.on('click', function() {
+          sidebar.show();
+          loadPlaceInfo(feature.properties.placeId, feature.properties.detailsUrl);
+        });
         return marker;
       }
     }).addTo(map);

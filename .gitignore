@@ -1,42 +1,35 @@
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
-*.egg
-*.egg-info/
-dist/
-build/
+*.pyo
+*.pyd
+*.pyc
 
-# Virtual environments
+# Virtual environment
 venv/
 env/
 ENV/
-.venv/
 
-# Django database
+# Django
 *.sqlite3
-
-# Django static & media
-/staticfiles/
-media/
-uploads/
-
-# CKEditor uploads
-uploads/
-
-# Environment variables
-.env
-
-# Logs
+db.sqlite3
+/media/
 *.log
 
-# IDEs
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE / Editor
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# OS files
-.DS_Store
-Thumbs.db
+# Byte-compiled / caches
+*.pyc
+*.pyo
+
+# Others
+*.bak
+*.orig
