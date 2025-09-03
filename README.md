@@ -87,7 +87,7 @@ PlaceImage — изображения локаций.
 
 Используйте команду:
 ```
-python manage.py import_places
+python manage.py load_place
 ```
 Локации с уже существующим title пропускаются.
 
