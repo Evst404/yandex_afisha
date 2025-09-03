@@ -23,10 +23,8 @@
     .select-place-prompt { color: red; width: 100px; }
   </style>
 
-  <!-- 🔹 Передача JSON через json_script -->
   {{ places_geojson|json_script:"places-geojson" }}
 
-  <!-- Vue шаблон -->
   <script id="app-template" type="text/template">
     <div v-bind:class="{'sidebar-content': 1, 'bg-white': selectedPlace, 'bg-secondary': !selectedPlace}">
       <div v-if="promptVisible" class="d-flex flex-column justify-content-center align-items-center" style="height: 100%;">
@@ -118,7 +116,6 @@
       }
     }).addTo(map);
 
-    // 🔹 JSON через json_script
     let places = JSON.parse(document.getElementById('places-geojson').textContent);
 
     L.geoJSON(places, {
