@@ -64,8 +64,8 @@ class Command(BaseCommand):
 
     def update_or_create_place(self, info):
         defaults = {
-            "short_description": info.get("short_description", ""),
-            "long_description": info.get("long_description", ""),
+            "short_description": info.get("description_short", ""),
+            "long_description": info.get("description_long", ""),
             "coordinates": info.get("coordinates", {}),
         }
         try:
